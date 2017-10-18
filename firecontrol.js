@@ -16,7 +16,7 @@ firebase.auth().signInAnonymously().catch(function(error) {
   // ...
 });
 
-var database = firebase.database();
+var userRef = firebase.database().ref('/users/');
 
 function processUpload() {
   var uploadInfo = document.getElementById("upload");
@@ -42,4 +42,55 @@ function updateUserData(obj) {
     });
   }
   document.getElementById("num").innerHTML = "Inserted " + obj.length + " records into Firebase";
+}
+
+userRef.orderByChild("playerScore").on("value", function(snapshot) {
+  console.log(snapshot.val());
+  var jsonObj = JSON.stringify(snapshot.val());
+  jsonObj = JSON.parse(jsonObj);
+  updateTable(jsonObj);
+});
+
+function updateTable(json) {
+  tbody = document.getElementById("liveContents");
+  tbody.innerHTML = "";
+  for(i in json) {
+    var phone = json[i].phone;
+    if (phone.length == 7) {
+      phone = phone.replace(/(\d{3})(\d{4})/, "$1-$2");
+    }
+    else if (phone.length == 10) {
+      phone = phone.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+    }
+    tbody.innerHTML += "<tr><td>" + json[i].name + "</td>"
+                    + "<td>" + phone + "</td>"
+                    + "<td>" + json[i].age + "</td></tr>";
+  }
+}
+
+function submitForm(form) {
+  var name = document.getElementById("nameIn");
+  var phone = document.getElementById("phoneIn");
+  var age = document.getElementById("ageIn");
+
+  var id = ('/users/' + name.value + '/');
+  firebase.database().ref(id).set({
+    name: name.value,
+    phone: phone.value,
+    age : age.value
+  });
+
+  name.value = "";
+  phone.value = "";
+  age.value = "";
+  return false;
+}
+
+function search() {
+  var searchTerm = document.getElementById("searchIn").value;
+  userRef.orderByChild('name').startAt("\uf8ff").endAt(searchTerm).once('value')
+  //userRef.orderByChild('name').startAt("[a-zA-Z0-9]*").endAt(searchTerm).once('value')
+    .then((function (snapshot) {
+      console.log(snapshot.val());
+    }));
 }

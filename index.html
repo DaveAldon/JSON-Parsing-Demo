@@ -11,6 +11,35 @@
       <button onclick="processUpload()">Upload</button>
       </form>
       <div id="num"></div>
-      <div id="liveView"></div>
+      <br>
+      <div id="liveView">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Phone Number</th>
+                    <th>Age</th>
+                </tr>
+            </thead>
+            <tbody id="liveContents">
+            </tbody>
+        </table>
+      </div>
+      <br>
+      <div id="inputArea">
+        <form method="post" onsubmit="return submitForm(this.form)">
+          Name:<br>
+          <input id="nameIn" type="text" name="name" required="required" pattern="([A-Z][a-z]*){1}(\s{1}[A-Z][a-z]*)?(\s{1}[A-Z][a-z]*)?" title="Please capitalize each name and/or initial."><br>
+          Phone Number:<br>
+          <input id="phoneIn" type="text" name="phone" required="required" pattern="([0-9]{7}|[0-9]{10})" title="Please use the following format: ####### or ##########."><br>
+          Age:<br>
+          <input id="ageIn" type="number" name="age" required="required"><br><br>
+          <input type="submit" name="submit" value="Submit">
+        </form>
+      </div>
+      <div id="search">
+        <input type="text" id="searchIn">
+        <input type="button" onClick="search()" value="Search">
+      </div>
     </body>
   </html>
